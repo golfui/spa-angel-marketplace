@@ -1,3 +1,4 @@
+// Import mock products to use for user's sells and wishlist
 const mockProducts = [
   {
     _id: '1',
@@ -11,7 +12,8 @@ const mockProducts = [
     seller: 'user1',
     sellerId: 'user1',
     active: true,
-    isWished: false
+    isWished: false,
+    bookable: false
   },
   {
     _id: '2',
@@ -25,7 +27,14 @@ const mockProducts = [
     seller: 'user2',
     sellerId: 'user2',
     active: true,
-    isWished: true
+    isWished: true,
+    bookable: true,
+    bookingDetails: {
+      pricePerNight: 100,
+      minNights: 2,
+      maxNights: 30,
+      amenities: ['WiFi', 'Kitchen', 'AC', 'Parking']
+    }
   },
   {
     _id: '3',
@@ -39,7 +48,14 @@ const mockProducts = [
     seller: 'user3',
     sellerId: 'user3',
     active: true,
-    isWished: false
+    isWished: false,
+    bookable: true,
+    bookingDetails: {
+      pricePerDay: 150,
+      minDays: 1,
+      maxDays: 30,
+      requirements: ['Valid driving license', 'Credit card', 'Security deposit']
+    }
   },
   {
     _id: '4',
@@ -53,7 +69,8 @@ const mockProducts = [
     seller: 'user4',
     sellerId: 'user4',
     active: true,
-    isWished: false
+    isWished: false,
+    bookable: false
   },
   {
     _id: '5',
@@ -67,7 +84,8 @@ const mockProducts = [
     seller: 'user5',
     sellerId: 'user5',
     active: true,
-    isWished: true
+    isWished: true,
+    bookable: false
   },
   {
     _id: '6',
@@ -81,7 +99,8 @@ const mockProducts = [
     seller: 'user6',
     sellerId: 'user6',
     active: true,
-    isWished: false
+    isWished: false,
+    bookable: false
   },
   {
     _id: '7',
@@ -95,7 +114,8 @@ const mockProducts = [
     seller: 'user7',
     sellerId: 'user7',
     active: true,
-    isWished: false
+    isWished: false,
+    bookable: false
   },
   {
     _id: '8',
@@ -109,7 +129,8 @@ const mockProducts = [
     seller: 'user8',
     sellerId: 'user8',
     active: true,
-    isWished: true
+    isWished: true,
+    bookable: false
   },
   {
     _id: '9',
@@ -123,7 +144,8 @@ const mockProducts = [
     seller: 'user1',
     sellerId: 'user1',
     active: false,
-    isWished: false
+    isWished: false,
+    bookable: false
   },
   {
     _id: '10',
@@ -137,7 +159,8 @@ const mockProducts = [
     seller: 'user1',
     sellerId: 'user1',
     active: false,
-    isWished: false
+    isWished: false,
+    bookable: false
   }
 ];
 
@@ -216,7 +239,8 @@ export async function createProduct(product) {
         seller: 'user1',
         sellerId: 'user1',
         active: true,
-        isWished: false
+        isWished: false,
+        bookable: ['properties', 'auto'].includes(product.category)
       };
       
       mockProducts.push(newProduct);
@@ -232,7 +256,8 @@ export async function editProduct(id, product) {
       if (index !== -1) {
         mockProducts[index] = {
           ...mockProducts[index],
-          ...product
+          ...product,
+          bookable: ['properties', 'auto'].includes(product.category)
         };
         resolve({ success: true });
       } else {
