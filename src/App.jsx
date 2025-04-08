@@ -13,6 +13,7 @@ import Error404 from './Pages/Error404';
 import Messages from './Pages/Messages';
 import Profile from './Pages/Profile';
 import EditProfile from './Pages/EditProfile';
+import Cart from './Pages/Cart';
 
 function App() {
    console.log("App component rendering");
@@ -34,6 +35,7 @@ function App() {
                <Route path='/profile/:id/edit' element={<EditProfile />} />
                <Route path='/messages' element={<Messages />} />
                <Route path='/messages/:id' element={<Messages />} />
+               <Route path='/cart' element={<Cart />} />
             </Routes>
          </main>
          <Footer />

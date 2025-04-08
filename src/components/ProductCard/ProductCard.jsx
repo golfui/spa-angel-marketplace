@@ -2,10 +2,28 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import moment from 'moment';
 import { motion } from 'framer-motion';
+import { FaShoppingCart } from 'react-icons/fa';
+import { addToCart } from '../../services/cartService';
+import { useCart } from '../../CartContext';
 
 function ProductCard({ params }) {
     const [isHovered, setIsHovered] = useState(false);
     const formattedDate = moment(params.addedAt).format('D MMM YYYY (dddd) HH:mm');
+    const { setCartItems } = useCart();
+    const [isAdding, setIsAdding] = useState(false);
+    
+    const handleAddToCart = async (e) => {
+        e.preventDefault(); // Prevent navigation
+        setIsAdding(true);
+        try {
+            const { cartItems: updatedCart } = await addToCart(params);
+            setCartItems(updatedCart);
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+        } finally {
+            setIsAdding(false);
+        }
+    };
     
     return (
         <motion.div 
@@ -49,9 +67,20 @@ function ProductCard({ params }) {
                     </motion.p>
                 </div>
             </Link>
-            <div className="px-4 py-3 bg-background-tertiary text-right text-xs text-text-muted flex justify-between items-center">
-                <span className="truncate max-w-[120px]">{params.city}</span>
-                <span>{formattedDate}</span>
+            <div className="px-4 py-3 bg-background-tertiary flex justify-between items-center">
+                <div className="text-xs text-text-muted">
+                    <span className="truncate max-w-[120px] block">{params.city}</span>
+                    <span>{formattedDate}</span>
+                </div>
+                <motion.button
+                    className={`p-2 text-accent-primary hover:text-accent-secondary transition-colors duration-300 ${isAdding ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    onClick={handleAddToCart}
+                    disabled={isAdding}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                >
+                    <FaShoppingCart />
+                </motion.button>
             </div>
         </motion.div>
     );

@@ -5,9 +5,12 @@ import { BsFillPersonFill, BsFillEnvelopeFill, BsFillPlusCircleFill } from 'reac
 import { IoLogOut } from 'react-icons/io5';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
 import { IoFlash } from "react-icons/io5";
+import { FaShoppingCart } from 'react-icons/fa';
+import { useCart } from '../../CartContext';
 
 function Header() {
     const { userData, setUserData } = useContext(Context);
+    const { cartCount } = useCart();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -46,15 +49,7 @@ function Header() {
             <div className="container mx-auto px-4 flex items-center justify-between">
                 <div className="flex items-center">
                     <NavLink className="flex items-center text-xl font-medium text-white mr-8 hover:opacity-80 transition-opacity duration-300" to="/">
-                        {/* <svg className="w-6 h-6 mr-2 transition-transform duration-300 hover:rotate-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13 5L21 5" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                            <path d="M13 12L21 12" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                            <path d="M13 19L21 19" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                            <path d="M1 19L5 19" stroke="#0078d4" strokeWidth="2" strokeLinecap="round"/>
-                            <path d="M1 12H9" stroke="#0078d4" strokeWidth="2" strokeLinecap="round"/>
-                            <path d="M1 5L5 5" stroke="#0078d4" strokeWidth="2" strokeLinecap="round"/>
-                        </svg> */}
-                      <IoFlash />
+                        <IoFlash />
                         <span className="relative">
                             Marketplace
                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent-primary transition-all duration-300 group-hover:w-full"></span>
@@ -90,7 +85,20 @@ function Header() {
                     {mobileMenuOpen ? <HiX className="h-6 w-6" /> : <HiMenuAlt3 className="h-6 w-6" />}
                 </button>
                 
-                <div className="hidden md:flex items-center">
+                <div className="hidden md:flex items-center space-x-6">
+                    <NavLink 
+                        to="/cart"
+                        className="relative text-2xl text-accent-primary hover:text-accent-secondary transform hover:scale-110 transition-all duration-300"
+                        title="Shopping Cart"
+                    >
+                        <FaShoppingCart />
+                        {cartCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-accent-tertiary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {cartCount}
+                            </span>
+                        )}
+                    </NavLink>
+
                     {userData ? (
                         <div className="flex items-center space-x-4">
                             <NavLink 
@@ -187,6 +195,15 @@ function Header() {
                         to="/categories/all"
                     >
                         Products
+                    </NavLink>
+                    
+                    <NavLink 
+                        className={({ isActive }) => 
+                            `block py-2 text-base font-medium ${isActive ? 'text-accent-primary' : 'text-gray-300'} hover:text-white transition-colors duration-300`
+                        }
+                        to="/cart"
+                    >
+                        Cart ({cartCount})
                     </NavLink>
                     
                     {userData ? (

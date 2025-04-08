@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ContextStore } from './ContextStore';
+import { CartProvider } from './CartContext';
 import './index.css';
 import App from './App';
 import moment from 'moment';
@@ -24,7 +25,9 @@ const appLoadedEvent = new CustomEvent('appLoaded');
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ContextStore>
-      <App />
+      <CartProvider>
+        <App />
+      </CartProvider>
     </ContextStore>
   </BrowserRouter>
 );

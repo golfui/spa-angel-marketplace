@@ -144,37 +144,38 @@ const mockProducts = [
 // Helper function to filter products
 const filterProducts = (category, query, page = 1, limit = 8) => {
   let filtered = [...mockProducts];
+  console.log("lost products: ", filtered);
+  // // Filter by category
+  // if (category && category !== 'all') {
+  //   filtered = filtered.filter(p => p.category === category);
+  // }
   
-  // Filter by category
-  if (category && category !== 'all') {
-    filtered = filtered.filter(p => p.category === category);
-  }
-  
-  // Filter by search query
-  if (query && query !== '') {
-    const searchLower = query.toLowerCase();
-    filtered = filtered.filter(p => 
-      p.title.toLowerCase().includes(searchLower) || 
-      p.description.toLowerCase().includes(searchLower) ||
-      p.city.toLowerCase().includes(searchLower)
-    );
-  }
+  // // Filter by search query
+  // if (query && query !== '') {
+  //   const searchLower = query.toLowerCase();
+  //   filtered = filtered.filter(p => 
+  //     p.title.toLowerCase().includes(searchLower) || 
+  //     p.description.toLowerCase().includes(searchLower) ||
+  //     p.city.toLowerCase().includes(searchLower)
+  //   );
+  // }
   
   // Filter active products
-  filtered = filtered.filter(p => p.active === true);
+  // filtered = filtered.filter(p => p.active === true);
   
   // Paginate
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
   const paginatedProducts = filtered.slice(startIndex, endIndex);
-  
-  return {
-    products: paginatedProducts,
+  const obj = {
+    products: filtered,
     count: filtered.length
-  };
+  }
+  console.log("filtered products: ", obj);
+  return obj;
 };
 
-export async function getAll(page, category, query) {
+export async function getAll(category, query, page) {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(filterProducts(category, query, page));
