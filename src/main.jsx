@@ -22,7 +22,7 @@ const appLoadedEvent = new CustomEvent('appLoaded');
 
 // Render the app
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
+  <BrowserRouter basename="/spa-angel-marketplace">
     <ContextStore>
       <App />
     </ContextStore>
