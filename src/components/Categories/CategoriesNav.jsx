@@ -18,7 +18,8 @@ function CategoriesNav() {
         { path: 'electronics', name: 'Electronics', icon: <MdPhoneAndroid className="mr-1 text-gray-300" /> },
         { path: 'clothes', name: 'Clothes', icon: <GiClothes className="mr-1 text-yellow-300" /> },
         { path: 'toys', name: 'Toys', icon: <BsFillPuzzleFill className="mr-1 text-pink-400" /> },
-        { path: 'garden', name: 'Garden', icon: <GiFlowerPot className="mr-1 text-green-400" /> }
+        { path: 'garden', name: 'Garden', icon: <GiFlowerPot className="mr-1 text-green-400" /> },
+        { path: 'cars', name: 'Cars', icon: <AiFillCar className="mr-1 text-purple-400" /> }
     ];
 
     const container = {
