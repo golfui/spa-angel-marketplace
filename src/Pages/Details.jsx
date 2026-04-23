@@ -23,7 +23,16 @@ function Details() {
     const [wish, setWish] = useState(false);
     const [showMsg, setShowMsg] = useState(false);
     const [showArchive, setShowArchive] = useState(false);
+    const [showBooking, setShowBooking] = useState(false);
     const [message, setMessage] = useState("");
+    const [bookingData, setBookingData] = useState({
+        startDate: "",
+        endDate: "",
+        name: "",
+        email: "",
+        phone: "",
+        message: ""
+    });
    
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -68,17 +77,28 @@ function Details() {
     };
 
     const handleBackdropClick = (e) => {
-        // Close modal if the backdrop (the parent div) is clicked directly
         if (e.target === e.currentTarget) {
             setShowMsg(false);
         }
     };
 
     const handleArchiveBackdropClick = (e) => {
-        // Close modal if the backdrop (the parent div) is clicked directly
         if (e.target === e.currentTarget) {
             setShowArchive(false);
         }
+    };
+
+    const handleBookingSubmit = (e) => {
+        e.preventDefault();
+        console.log('Booking submitted:', bookingData);
+        setShowBooking(false);
+    };
+
+    const handleBookingChange = (e) => {
+        setBookingData({
+            ...bookingData,
+            [e.target.name]: e.target.value
+        });
     };
 
     return (
@@ -153,6 +173,17 @@ function Details() {
                                         Product listed at {moment(product.addedAt).format('D MMM YYYY (dddd) HH:mm')}
                                     </p>
                                 </motion.div>
+
+                                {product.bookable && (
+                                    <motion.button
+                                        className="w-full mt-6 bg-accent-primary hover:bg-accent-secondary text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center"
+                                        onClick={() => setShowBooking(true)}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        Book Now
+                                    </motion.button>
+                                )}
                             </motion.div>
                             
                             <motion.div 
@@ -198,6 +229,12 @@ function Details() {
                                             transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
                                         >
                                             {(product.price).toFixed(2)}€
+                                            {product.bookable && product.bookingDetails?.pricePerNight && (
+                                                <span className="text-sm text-text-secondary ml-2">/ night</span>
+                                            )}
+                                            {product.bookable && product.bookingDetails?.pricePerDay && (
+                                                <span className="text-sm text-text-secondary ml-2">/ day</span>
+                                            )}
                                         </motion.h1>
                                     )}
                                     
@@ -374,11 +411,150 @@ function Details() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
+
+                        {/* Booking Modal */}
+                        <AnimatePresence>
+                            {showBooking && (
+                                <motion.div 
+                                    className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    onClick={(e) => e.target === e.currentTarget && setShowBooking(false)}
+                                >
+                                    <motion.div 
+                                        className="bg-background-secondary rounded-lg shadow-lg w-full max-w-2xl border border-background-tertiary m-4"
+                                        initial={{ scale: 0.9, y: 20 }}
+                                        animate={{ scale: 1, y: 0 }}
+                                        exit={{ scale: 0.9, y: 20 }}
+                                    >
+                                        <div className="flex justify-between items-center p-4 border-b border-background-tertiary">
+                                            <h3 className="text-lg font-medium text-text-primary">Book {product.title}</h3>
+                                            <button 
+                                                className="text-text-muted hover:text-accent-tertiary transition-colors duration-300"
+                                                onClick={() => setShowBooking(false)}
+                                            >
+                                                &times;
+                                            </button>
+                                        </div>
+                                        
+                                        <form onSubmit={handleBookingSubmit} className="p-6">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-text-secondary mb-2">
+                                                        Start Date
+                                                    </label>
+                                                    <input 
+                                                        type="date"
+                                                        name="startDate"
+                                                        value={bookingData.startDate}
+                                                        onChange={handleBookingChange}
+                                                        className="w-full px-3 py-2 bg-background-tertiary border border-background rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-text-primary"
+                                                        required
+                                                    />
+                                                </div>
+                                                
+                                                <div>
+                                                    <label className="block text-sm font-medium text-text-secondary mb-2">
+                                                        End Date
+                                                    </label>
+                                                    <input 
+                                                        type="date"
+                                                        name="endDate"
+                                                        value={bookingData.endDate}
+                                                        onChange={handleBookingChange}
+                                                        className="w-full px-3 py-2 bg-background-tertiary border border-background rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-text-primary"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-text-secondary mb-2">
+                                                        Name
+                                                    </label>
+                                                    <input 
+                                                        type="text"
+                                                        name="name"
+                                                        value={bookingData.name}
+                                                        onChange={handleBookingChange}
+                                                        className="w-full px-3 py-2 bg-background-tertiary border border-background rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-text-primary"
+                                                        required
+                                                    />
+                                                </div>
+                                                
+                                                <div>
+                                                    <label className="block text-sm font-medium text-text-secondary mb-2">
+                                                        Email
+                                                    </label>
+                                                    <input 
+                                                        type="email"
+                                                        name="email"
+                                                        value={bookingData.email}
+                                                        onChange={handleBookingChange}
+                                                        className="w-full px-3 py-2 bg-background-tertiary border border-background rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-text-primary"
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="mb-6">
+                                                <label className="block text-sm font-medium text-text-secondary mb-2">
+                                                    Phone
+                                                </label>
+                                                <input 
+                                                    type="tel"
+                                                    name="phone"
+                                                    value={bookingData.phone}
+                                                    onChange={handleBookingChange}
+                                                    className="w-full px-3 py-2 bg-background-tertiary border border-background rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-text-primary"
+                                                    required
+                                                />
+                                            </div>
+                                            
+                                            <div className="mb-6">
+                                                <label className="block text-sm font-medium text-text-secondary mb-2">
+                                                    Additional Notes
+                                                </label>
+                                                <textarea 
+                                                    name="message"
+                                                    value={bookingData.message}
+                                                    onChange={handleBookingChange}
+                                                    className="w-full px-3 py-2 bg-background-tertiary border border-background rounded-md focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-accent-primary text-text-primary resize-none"
+                                                    rows="4"
+                                                ></textarea>
+                                            </div>
+                                            
+                                            <div className="flex justify-end space-x-3">
+                                                <motion.button 
+                                                    type="button"
+                                                    className="px-4 py-2 bg-background-tertiary text-text-primary rounded-md hover:bg-background transition-colors duration-300"
+                                                    onClick={() => setShowBooking(false)}
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    Cancel
+                                                </motion.button>
+                                                <motion.button 
+                                                    type="submit"
+                                                    className="px-6 py-2 bg-accent-primary text-white rounded-md hover:bg-accent-secondary transition-colors duration-300"
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    Submit Booking
+                                                </motion.button>
+                                            </div>
+                                        </form>
+                                    </motion.div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 ) : (
-                    <div className="flex flex-col justify-center items-center h-64">
+                    <div className="flex justify-center items-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-primary"></div>
-                        <p className="mt-4 text-text-muted">Loading product details...</p>
+                        <p className="ml-4 text-text-secondary">Loading details...</p>
                     </div>
                 )}
             </div>
